@@ -6,7 +6,7 @@
 class network {
 private:
 	struct Layer {
-
+		
 	};
 public:
 	int forward();
