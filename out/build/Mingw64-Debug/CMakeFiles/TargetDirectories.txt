@@ -1,0 +1,3 @@
+D:/Project/DigitalRecognize/out/build/Mingw64-Debug/CMakeFiles/DigitalRecognize.dir
+D:/Project/DigitalRecognize/out/build/Mingw64-Debug/CMakeFiles/edit_cache.dir
+D:/Project/DigitalRecognize/out/build/Mingw64-Debug/CMakeFiles/rebuild_cache.dir
