@@ -6,10 +6,9 @@
 class network {
 private:
 	struct Layer {
-		
+
 	};
 public:
-	int forward();
 	void OpenPic(std::string PATH,int x);
 	void printPicture();
 	void convolution(int step,int kernelsize,conv kern);
