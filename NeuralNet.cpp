@@ -3,13 +3,22 @@ double network::relu(double x)
 {
 	return std::max(0.0, x);
 }
-double network::desrelu(double x)
+double network::dsrelu(double x)
 {
 	if (x > 0)
 		return 1;
 	else
 		return 0;
 }
+double network::sigmoid(double x)
+{
+	return 1 / (1 + exp(-x));
+}
+double network::dsigmoid(double x)
+{
+	return x * (1 - x);
+}
+
 void network::OpenPic(std::string PATH,int x)
 {
 	std::string line;
@@ -35,17 +44,17 @@ void network::OpenPic(std::string PATH,int x)
 		// std::cout << atol(word.c_str());
 		++cont;
 	}
-	for (int i = 0; i < 32; i++)
+	/*for (int i = 0; i < 32; i++)
 	{
 		for (int j = 0; j < 32; j++)
 		{
 			std::cout << convk[0][0].output[i][j] << " ";
 		}
 		std::cout << std::endl;
-	}
+	}*/
 	//std::cout << line << std::endl;
 }
-void network::fanzhuan(kernel *kk)
+void network::fanzhuan(kernel *kk)//废了:)
 {
 	// 把m赋值给k，防止对后续操作产生影响
 	int k = kk->kersize;
@@ -100,6 +109,7 @@ void network::addConvolutionLayer(int layer, int num, int kersize, int stride)
 }
 void network::initConv()
 {
+	srand(time(0));
 	poolc[0].kersize = 2;
 	poolc[0].TYPE = 1;
 	poolc[0].stride = 2;
@@ -115,6 +125,21 @@ void network::initConv()
 	//currentLayer = 1;
 	convk[0].push_back(kk);
 	//fanzhuan(&convk[0][0]);
+
+	for (int i = 0; i < 121; i++)
+	{
+		for (int j = 0; j < 85; j++)
+		{
+			fullConnect1[i][j]= rand() % 10 / 5. - 1;
+		}
+	}
+	for (int i = 0; i < 85; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			fullConnect2[i][j] = rand() % 10 / 5. - 1;
+		}
+	}
 }
 void network::pooling(int layerout,int layercoor)
 {
@@ -182,7 +207,7 @@ void network::convolution(int layer)
 			for (int x = 0; x < convk[layer][i].outputsize; x ++)
 			{
 				convk[layer][i].output[y][x] += convk[layer][i].bias;
-				convk[layer][i].output[y][x] = relu(convk[layer][i].output[y][x]);
+				convk[layer][i].output[y][x] = sigmoid(convk[layer][i].output[y][x]);
 			}
 		}
 	}
@@ -196,10 +221,75 @@ void network::convolution(int layer)
 	}*/
 	
 }
+void network::forward()//开摆！！
+{
+	memset(neural, 0, sizeof(neural));
+	for (int i = 0; i < convk[3].size(); i++)
+	{
+		for (int j = 0; j < 84; j++)
+		{
+			neural[j] = convk[3][i].output[0][0] * fullConnect1[i][j];
+		}
+	}
+	for (int i = 0; i < 84; i++)
+	{
+		neural[i] = sigmoid(neural[i]);
+	}
+
+	memset(output, 0, sizeof(output));
+	for (int i = 0; i < 84; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			output[j] = neural[i] * fullConnect2[i][j];
+		}
+	}
+	double he=0;
+	for (int i = 0; i < 10; i++)
+	{
+		he += exp(output[i]);
+	}
+	
+	for (int i = 0; i < 10; i++)
+	{
+		
+		output[i] = exp(output[i]) / (he*1.0);
+		std::cout << output[i];
+	}
+	return;
+}
+double network::crossEntropy()
+{
+	double he = 0;
+	int yic=0;
+	for (int i = 0; i < 10; i++)
+	{
+		if (i == label)
+		{
+			yic = 1;
+		}
+		else
+		{
+			yic = 0;
+		}
+		he += yic * log(output[i]);
+	}
+}
 void network::printPic()
 {
-	std::cout << convk[1][0].outputsize;
-	std::cout << convk[2][0].outputsize;
-	std::cout << convk[3][0].outputsize;
-	
+	std::cout << convk[3][0].output[0][1] <<" ";
+	std::cout << convk[2][0].outputsize << " ";
+	std::cout << convk[3][0].outputsize << std::endl;
+	int ans;
+	double maxn = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		if (output[i] > maxn)
+		{
+			ans = i;
+			maxn = output[i];
+			std::cout << maxn << std::endl;
+		}
+	}
+	std::cout << ans << std::endl;
 }

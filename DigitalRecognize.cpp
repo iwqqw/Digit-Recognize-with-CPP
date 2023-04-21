@@ -14,6 +14,7 @@ int main()
 	net.convolution(2);
 	net.pooling(2, 1);
 	net.convolution(3);
+	net.forward();
 	net.printPic();
 	//cout << "Hello CMake" << endl;
 	return 0;
