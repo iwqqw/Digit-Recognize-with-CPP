@@ -249,7 +249,6 @@ void network::forward()//¿ª°Ú£¡£¡
 	{
 		he += exp(output[i]);
 	}
-	
 	for (int i = 0; i < 10; i++)
 	{
 		
@@ -274,6 +273,7 @@ double network::crossEntropy()
 		}
 		he += yic * log(output[i]);
 	}
+	loss = he;
 }
 void network::printPic()
 {

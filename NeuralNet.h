@@ -51,5 +51,5 @@ private:
 	double dsrelu(double x);
 	double sigmoid(double x);
 	double dsigmoid(double x);
-	
+	double loss;
 };
