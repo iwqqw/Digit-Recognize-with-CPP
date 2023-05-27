@@ -257,6 +257,10 @@ void network::forward()//¿ª°Ú£¡£¡
 	}
 	return;
 }
+void network::backward()
+{
+
+}
 double network::crossEntropy()
 {
 	double he = 0;
